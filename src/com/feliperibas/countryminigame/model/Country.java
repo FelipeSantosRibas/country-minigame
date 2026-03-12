@@ -1,8 +1,5 @@
 package com.feliperibas.countryminigame.model;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-
 import java.util.Arrays;
 
 public class Country {
@@ -16,7 +13,6 @@ public class Country {
 
     public Country() {
     }
-
 
     public Country(String name, String cca3, boolean independent, String[] capital, String[] continents, int population, String flag) {
         this.name = name;
@@ -38,7 +34,7 @@ public class Country {
                 ", continents=" + Arrays.toString(continents) +
                 ", population=" + population +
                 ", flag='" + flag + '\'' +
-                '}';
+                "}\n";
     }
 
     public String getName() {

@@ -1,9 +1,12 @@
 package com.feliperibas.countryminigame.view;
 
+import com.feliperibas.countryminigame.model.Country;
+
 import java.util.Scanner;
 
 public class ConsoleView {
     private Scanner scanner = new Scanner(System.in);
+    private String in = "";
 
     public String askDifficulty(){
         System.out.println("Select the Difficulty:");
@@ -15,8 +18,6 @@ public class ConsoleView {
         boolean needsToBeIndependent = true;
         int minimumPopulation = 0;
 
-        Scanner scanner = new Scanner(System.in);
-        String in = "";
         for (boolean repeat = true; repeat;){
             in = scanner.nextLine();
 
@@ -44,7 +45,6 @@ public class ConsoleView {
 
     public boolean askRepeat(){
         System.out.println("Wanna try again?");
-        String in;
         do {
             in = scanner.nextLine();
             if (!in.equalsIgnoreCase("yes")&&!in.equalsIgnoreCase("no")){
@@ -53,5 +53,15 @@ public class ConsoleView {
         } while (!in.equalsIgnoreCase("yes")&&!in.equalsIgnoreCase("no"));
 
         return in.equalsIgnoreCase("yes");
+    }
+
+    public void askFlagQuestion(Country country) {
+        System.out.println("Guess the country by the flag (" + country.getFlag() + "):");
+        in = scanner.nextLine();
+        if (in.equalsIgnoreCase(country.getName())) {
+            System.out.println("Congratulations! You guessed right, the country is " + country.getName() + "!");
+        } else {
+            System.out.println("No! The country was " + country.getName() + ".");
+        }
     }
 }

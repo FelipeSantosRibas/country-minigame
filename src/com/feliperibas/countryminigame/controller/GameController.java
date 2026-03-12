@@ -18,18 +18,21 @@ public class GameController {
 
     public void startGameConsole() throws IOException, InterruptedException {
         service.loadCountriesInfoJson();
-        service.loadCountryNamesList();
+        //service.loadCountryNamesList();
 
         service.setDifficulty(view.askDifficulty());
+
+        service.loadCountryList();
+        service.filterCountryList();
 
         // Game Loop
         boolean repeat = true;
         while (repeat){
-
-
+            view.askFlagQuestion(service.getRandomFilteredCountry());
 
             repeat = view.askRepeat();
         }
+        System.out.println("Thanks for playing!");
     }
 
 }

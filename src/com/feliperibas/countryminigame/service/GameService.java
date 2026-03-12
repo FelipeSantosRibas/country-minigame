@@ -11,13 +11,15 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class GameService {
 
     private String countriesInfoJson;
-    private List<String> countryNamesList;
-    private List<String> filteredCountryNamesList;
+    // private List<String> countryNamesList;
+    private List<Country> filteredCountryList;
     private List<Country> countryList;
+    private Country selectedCountry;
     private String difficulty;
 
     // Getters and Setters
@@ -26,9 +28,11 @@ public class GameService {
         this.difficulty = difficulty;
     }
 
+    public Country getSelectedCountry() {
+        return selectedCountry;
+    }
 
     // Other methods
-
 
     public String loadCountriesInfoJson() throws IOException, InterruptedException {
         // https://restcountries.com/v3.1/all?fields=name,cca3,independent,capital,continents,population,flags
@@ -45,6 +49,7 @@ public class GameService {
 
     }
 
+    /*
     public List loadCountryNamesList(){
 
         // JSON treatment to get country names list to array
@@ -57,6 +62,7 @@ public class GameService {
         }
         return this.countryNamesList = namesArray; // Array with all countries names
     }
+     */
 
     public List loadCountryList(){
 
@@ -65,19 +71,23 @@ public class GameService {
         JsonArray jsonArray = gson.fromJson(countriesInfoJson, JsonArray.class);
 
 
-        countryList.clear();
+        if (countryList != null){
+            countryList.clear();
+        } else{
+            countryList = new ArrayList<>();
+        }
         for (int i = 0; i < jsonArray.size(); i++) {
-            countryList.set(i, new Country());
-            countryList.get(i).setName(jsonArray.get(0).getAsJsonObject().get("name")
+            countryList.add(i, new Country());
+            countryList.get(i).setName(jsonArray.get(i).getAsJsonObject().get("name")
                     .getAsJsonObject().get("common").getAsString());
-            countryList.get(i).setCca3(jsonArray.get(0).getAsJsonObject().get("cca3").getAsString());
-            countryList.get(i).setIndependent(jsonArray.get(0).getAsJsonObject().get("independent").getAsBoolean());
+            countryList.get(i).setCca3(jsonArray.get(i).getAsJsonObject().get("cca3").getAsString());
+            countryList.get(i).setIndependent(jsonArray.get(i).getAsJsonObject().get("independent").getAsBoolean());
 
             // Capital
             try {
-                countryList.get(i).setCapital( new String[jsonArray.get(0).getAsJsonObject().get("capital").getAsJsonArray().size()]);
+                countryList.get(i).setCapital( new String[jsonArray.get(i).getAsJsonObject().get("capital").getAsJsonArray().size()]);
                 for (int i2 = 0; i2 < countryList.get(i).getCapital().length; i2++) {
-                    countryList.get(i).getCapital()[i2] = jsonArray.get(0).getAsJsonObject().get("capital").getAsJsonArray().get(i).getAsString();
+                    countryList.get(i).getCapital()[i2] = jsonArray.get(i).getAsJsonObject().get("capital").getAsJsonArray().get(i2).getAsString();
                 }
             } catch (Exception E) {
                 countryList.get(i).setCapital( new String[1]);
@@ -85,13 +95,13 @@ public class GameService {
             }
 
             // Continents
-            this.continents = new String[jsonArray.get(0).getAsJsonObject().get("continents").getAsJsonArray().size()];
-            for (int i = 0; i < continents.length; i++) {
-                this.continents[i] = jsonArray.get(0).getAsJsonObject().get("continents").getAsJsonArray().get(i).getAsString();
+            countryList.get(i).setContinents(new String[jsonArray.get(i).getAsJsonObject().get("continents").getAsJsonArray().size()]);
+            for (int i2 = 0; i2 < countryList.get(i).getContinents().length; i2++) {
+                countryList.get(i).getContinents()[i2] = jsonArray.get(i).getAsJsonObject().get("continents").getAsJsonArray().get(i2).getAsString();
             }
 
-            this.population = jsonArray.get(0).getAsJsonObject().get("population").getAsInt();
-            this.flag = jsonArray.get(0).getAsJsonObject().get("flags").getAsJsonObject().get("png").getAsString();
+            countryList.get(i).setPopulation(jsonArray.get(i).getAsJsonObject().get("population").getAsInt());
+            countryList.get(i).setFlag(jsonArray.get(i).getAsJsonObject().get("flags").getAsJsonObject().get("png").getAsString());
         }
 
 
@@ -119,11 +129,17 @@ public class GameService {
         };
 
         // Using Stream API to filter
-        filteredCountryNamesList = countryNamesList;
+        int finalMinimumPopulation = minimumPopulation;
+        boolean finalNeedsToBeIndependent = needsToBeIndependent;
+        filteredCountryList = countryList.stream().filter(i -> i.getPopulation() >= finalMinimumPopulation).toList();
+        if (finalNeedsToBeIndependent){
+            filteredCountryList = filteredCountryList.stream().filter(i -> i.getIndependent()).toList();
+        }
+        return filteredCountryList;
+    }
 
-        //filteredCountryNamesList.stream().
-
-
-        return filteredCountryNamesList;
+    public Country getRandomFilteredCountry() {
+        Random random = new Random();
+        return selectedCountry = filteredCountryList.get(random.nextInt(filteredCountryList.size()-1));
     }
 }
