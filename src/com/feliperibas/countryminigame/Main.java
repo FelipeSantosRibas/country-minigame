@@ -1,7 +1,10 @@
 package com.feliperibas.countryminigame;
 
 
+import com.feliperibas.countryminigame.controller.GameController;
 import com.feliperibas.countryminigame.model.Country;
+import com.feliperibas.countryminigame.service.GameService;
+import com.feliperibas.countryminigame.view.ConsoleView;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 
@@ -17,62 +20,15 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        // Protocolo HTTP
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://restcountries.com/v3.1/all?fields=name"))
-                .build();
-        HttpResponse<String> response = client
-                .send(request, HttpResponse.BodyHandlers.ofString());
+        GameService service = new GameService();
+        ConsoleView view = new ConsoleView();
 
-        //System.out.println(response.body());
+        GameController controller = new GameController(service, view);
 
-        // JSON treatment to get country names list to array
-        Gson gson = new Gson();
-        JsonArray jsonNamesArray = gson.fromJson(response.body(), JsonArray.class);
-        String[] namesArray = new String[jsonNamesArray.size()];
-        for (int i = 0; i < jsonNamesArray.size(); i++){
-            namesArray[i] = jsonNamesArray.get(i).getAsJsonObject().get("name")
-                    .getAsJsonObject().get("common").getAsString();
+        controller.startGameConsole();
 
-        }
-        System.out.println(Arrays.toString(namesArray));
+        /*
 
-
-        System.out.println("Select the Difficulty:");
-        System.out.println("Easy (Only independent 10m+ population countries)");
-        System.out.println("Medium (Only 500k+ population countries)");
-        System.out.println("Hard (Every nation)");
-
-        String difficulty = "";
-        boolean needsToBeIndependent = true;
-        int minimumPopulation = 0;
-
-        Scanner scanner = new Scanner(System.in);
-        String in = "";
-        for (boolean repeat = true; repeat;){
-            in = scanner.nextLine();
-            if (in.equalsIgnoreCase("hard")){
-                difficulty = "hard";
-                needsToBeIndependent = false;
-                minimumPopulation = 0;
-                repeat = false;
-            } else if(in.equalsIgnoreCase("medium")){
-                difficulty = "medium";
-                needsToBeIndependent = false;
-                minimumPopulation = 500000;
-                repeat = false;
-            } else if(in.equalsIgnoreCase("easy")){
-                difficulty = "easy";
-                needsToBeIndependent = true;
-                minimumPopulation = 10000000;
-                repeat = false;
-            } else{
-                System.out.println("Please, write a valid difficulty");
-                repeat = true;
-            }
-        }
-        System.out.println("You chose difficulty: "+difficulty);
 
         Country country = new Country();
         boolean again = false;
@@ -118,15 +74,9 @@ public class Main {
                 System.out.println("No! The country was " + country.getName() + ".");
             }
 
-            System.out.println("Wanna try again?");
-            do {
-                in = scanner.nextLine();
-                if (!in.equalsIgnoreCase("yes")&&!in.equalsIgnoreCase("no")){
-                    System.out.println("Please, answer with yes or no.");
-                }
-            } while (!in.equalsIgnoreCase("yes")&&!in.equalsIgnoreCase("no"));
 
-            again = in.equalsIgnoreCase("yes");
         }while (again);
+
+         */
     }
 }

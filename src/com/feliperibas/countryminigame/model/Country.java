@@ -17,36 +17,6 @@ public class Country {
     public Country() {
     }
 
-    public Country(String json){
-        Gson gson = new Gson();
-        JsonArray jsonArray = gson.fromJson(json, JsonArray.class);
-
-        this.name = jsonArray.get(0).getAsJsonObject().get("name")
-                .getAsJsonObject().get("common").getAsString();
-        this.cca3 = jsonArray.get(0).getAsJsonObject().get("cca3").getAsString();
-        this.independent = jsonArray.get(0).getAsJsonObject().get("independent").getAsBoolean();
-
-        // Capital
-        try {
-            this.capital = new String[jsonArray.get(0).getAsJsonObject().get("capital").getAsJsonArray().size()];
-            for (int i = 0; i < capital.length; i++) {
-                this.capital[i] = jsonArray.get(0).getAsJsonObject().get("capital").getAsJsonArray().get(i).getAsString();
-            }
-        } catch (Exception E){
-            this.capital = new String[1];
-            this.capital[0] = "null";
-        }
-
-        // Continents
-        this.continents = new String[jsonArray.get(0).getAsJsonObject().get("continents").getAsJsonArray().size()];
-        for (int i = 0; i < continents.length; i ++) {
-            this.continents[i] = jsonArray.get(0).getAsJsonObject().get("continents").getAsJsonArray().get(i).getAsString();
-        }
-
-        this.population = jsonArray.get(0).getAsJsonObject().get("population").getAsInt();
-        this.flag = jsonArray.get(0).getAsJsonObject().get("flags").getAsJsonObject().get("png").getAsString();
-    }
-
 
     public Country(String name, String cca3, boolean independent, String[] capital, String[] continents, int population, String flag) {
         this.name = name;
