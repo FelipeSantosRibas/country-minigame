@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="country-minigame:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/country_minigame_jar</output-path>
+    <root id="archive" name="country-minigame.jar">
+      <element id="module-output" name="country-minigame" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../Bibliotecas/gson-2.13.2.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
